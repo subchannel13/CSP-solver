@@ -1,0 +1,528 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="postgresModel.Store" Provider="Npgsql" ProviderManifestToken="11.2" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ACO_params">
+          <Key>
+            <PropertyRef Name="problemId" />
+          </Key>
+          <Property Name="problemId" Type="int8" Nullable="false" />
+          <Property Name="populationSize" Type="int4" Nullable="false" />
+          <Property Name="beta" Type="float4" Nullable="false" />
+          <Property Name="gamma" Type="int4" Nullable="false" />
+          <Property Name="ro" Type="float4" Nullable="false" />
+          <Property Name="maxIterations" Type="int4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GA_params">
+          <Key>
+            <PropertyRef Name="problemId" />
+          </Key>
+          <Property Name="problemId" Type="int8" Nullable="false" />
+          <Property Name="populationSize" Type="int4" Nullable="false" />
+          <Property Name="tournamentSize" Type="int4" Nullable="false" />
+          <Property Name="maxGenerations" Type="int4" Nullable="false" />
+          <Property Name="crossoverRatio" Type="float4" Nullable="false" />
+          <Property Name="mutationRatio" Type="float4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PatternOrders">
+          <Key>
+            <PropertyRef Name="patternId" />
+            <PropertyRef Name="orderId" />
+          </Key>
+          <Property Name="patternId" Type="int8" Nullable="false" />
+          <Property Name="orderId" Type="int4" Nullable="false" />
+          <Property Name="quantity" Type="int4" Nullable="false" />
+          <Property Name="cachedLength" Type="int4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Problem">
+          <Key>
+            <PropertyRef Name="problemId" />
+          </Key>
+          <Property Name="problemId" Type="int8" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="status" Type="int4" Nullable="false" />
+          <Property Name="material" Type="int4" Nullable="false" />
+          <Property Name="algorithm" Type="int4" Nullable="false" />
+          <Property Name="dateAssinged" Type="date" Nullable="false" />
+          <Property Name="dateSolved" Type="date" Nullable="false" />
+          <Property Name="note" Type="text" Nullable="false" />
+          <Property Name="cutWidth" Type="int4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProblemOrders">
+          <Key>
+            <PropertyRef Name="problemId" />
+            <PropertyRef Name="orderId" />
+          </Key>
+          <Property Name="problemId" Type="int8" Nullable="false" />
+          <Property Name="pieceLength" Type="int4" Nullable="false" />
+          <Property Name="quantity" Type="int4" Nullable="false" />
+          <Property Name="orderId" Type="int4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProblemStatus">
+          <Key>
+            <PropertyRef Name="statusId" />
+          </Key>
+          <Property Name="statusId" Type="int4" Nullable="false" />
+          <Property Name="description" Type="text" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SolutionPatterns">
+          <Key>
+            <PropertyRef Name="patternId" />
+          </Key>
+          <Property Name="problemId" Type="int8" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="solutionId" Type="int4" Nullable="false" />
+          <Property Name="patternId" Type="int8" Nullable="false" />
+          <Property Name="quantity" Type="int4" Nullable="false" />
+          <Property Name="stock" Type="int4" Nullable="false" />
+          <Property Name="trimLength" Type="int4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Stocks">
+          <Key>
+            <PropertyRef Name="materialType" />
+            <PropertyRef Name="stockId" />
+          </Key>
+          <Property Name="materialType" Type="int4" Nullable="false" />
+          <Property Name="materialLength" Type="int4" Nullable="false" />
+          <Property Name="quantity" Type="int4" Nullable="false" />
+          <Property Name="stockId" Type="int4" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="StockType">
+          <Key>
+            <PropertyRef Name="typeId" />
+          </Key>
+          <Property Name="typeId" Type="int4" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="typeName" Type="text" Nullable="false" />
+          <Property Name="width" Type="int4" Nullable="false" />
+          <Property Name="problemSpecific" Type="bool" Nullable="false" />
+        </EntityType>
+        <Association Name="ACO_params_problemId_fkey">
+          <End Role="Problem" Type="Self.Problem" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ACO_params" Type="Self.ACO_params" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Problem">
+              <PropertyRef Name="problemId" />
+            </Principal>
+            <Dependent Role="ACO_params">
+              <PropertyRef Name="problemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="GA_params_problemId_fkey">
+          <End Role="Problem" Type="Self.Problem" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GA_params" Type="Self.GA_params" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Problem">
+              <PropertyRef Name="problemId" />
+            </Principal>
+            <Dependent Role="GA_params">
+              <PropertyRef Name="problemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PatternOrders_patternId_fkey">
+          <End Role="SolutionPatterns" Type="Self.SolutionPatterns" Multiplicity="1" />
+          <End Role="PatternOrders" Type="Self.PatternOrders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SolutionPatterns">
+              <PropertyRef Name="patternId" />
+            </Principal>
+            <Dependent Role="PatternOrders">
+              <PropertyRef Name="patternId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ProblemOrders_problemId_fkey">
+          <End Role="Problem" Type="Self.Problem" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProblemOrders" Type="Self.ProblemOrders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Problem">
+              <PropertyRef Name="problemId" />
+            </Principal>
+            <Dependent Role="ProblemOrders">
+              <PropertyRef Name="problemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Stocks_materialType_fkey">
+          <End Role="StockType" Type="Self.StockType" Multiplicity="1" />
+          <End Role="Stocks" Type="Self.Stocks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StockType">
+              <PropertyRef Name="typeId" />
+            </Principal>
+            <Dependent Role="Stocks">
+              <PropertyRef Name="materialType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="postgresModelStoreContainer">
+          <EntitySet Name="ACO_params" EntityType="Self.ACO_params" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GA_params" EntityType="Self.GA_params" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatternOrders" EntityType="Self.PatternOrders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Problem" EntityType="Self.Problem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProblemOrders" EntityType="Self.ProblemOrders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProblemStatus" EntityType="Self.ProblemStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SolutionPatterns" EntityType="Self.SolutionPatterns" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Stocks" EntityType="Self.Stocks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StockType" EntityType="Self.StockType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="ACO_params_problemId_fkey" Association="Self.ACO_params_problemId_fkey">
+            <End Role="Problem" EntitySet="Problem" />
+            <End Role="ACO_params" EntitySet="ACO_params" />
+          </AssociationSet>
+          <AssociationSet Name="GA_params_problemId_fkey" Association="Self.GA_params_problemId_fkey">
+            <End Role="Problem" EntitySet="Problem" />
+            <End Role="GA_params" EntitySet="GA_params" />
+          </AssociationSet>
+          <AssociationSet Name="PatternOrders_patternId_fkey" Association="Self.PatternOrders_patternId_fkey">
+            <End Role="SolutionPatterns" EntitySet="SolutionPatterns" />
+            <End Role="PatternOrders" EntitySet="PatternOrders" />
+          </AssociationSet>
+          <AssociationSet Name="ProblemOrders_problemId_fkey" Association="Self.ProblemOrders_problemId_fkey">
+            <End Role="Problem" EntitySet="Problem" />
+            <End Role="ProblemOrders" EntitySet="ProblemOrders" />
+          </AssociationSet>
+          <AssociationSet Name="Stocks_materialType_fkey" Association="Self.Stocks_materialType_fkey">
+            <End Role="StockType" EntitySet="StockType" />
+            <End Role="Stocks" EntitySet="Stocks" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="postgresModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ACO_params">
+          <Key>
+            <PropertyRef Name="problemId" />
+          </Key>
+          <Property Name="problemId" Type="Int64" Nullable="false" />
+          <Property Name="populationSize" Type="Int32" Nullable="false" />
+          <Property Name="beta" Type="Single" Nullable="false" />
+          <Property Name="gamma" Type="Int32" Nullable="false" />
+          <Property Name="ro" Type="Single" Nullable="false" />
+          <Property Name="maxIterations" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Problem" Relationship="Self.ACO_params_problemId_fkey" FromRole="ACO_params" ToRole="Problem" />
+        </EntityType>
+        <EntityType Name="GA_params">
+          <Key>
+            <PropertyRef Name="problemId" />
+          </Key>
+          <Property Name="problemId" Type="Int64" Nullable="false" />
+          <Property Name="populationSize" Type="Int32" Nullable="false" />
+          <Property Name="tournamentSize" Type="Int32" Nullable="false" />
+          <Property Name="maxGenerations" Type="Int32" Nullable="false" />
+          <Property Name="crossoverRatio" Type="Single" Nullable="false" />
+          <Property Name="mutationRatio" Type="Single" Nullable="false" />
+          <NavigationProperty Name="Problem" Relationship="Self.GA_params_problemId_fkey" FromRole="GA_params" ToRole="Problem" />
+        </EntityType>
+        <EntityType Name="PatternOrder">
+          <Key>
+            <PropertyRef Name="patternId" />
+            <PropertyRef Name="orderId" />
+          </Key>
+          <Property Name="patternId" Type="Int64" Nullable="false" />
+          <Property Name="orderId" Type="Int32" Nullable="false" />
+          <Property Name="quantity" Type="Int32" Nullable="false" />
+          <Property Name="cachedLength" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SolutionPattern" Relationship="Self.PatternOrders_patternId_fkey" FromRole="PatternOrders" ToRole="SolutionPatterns" />
+        </EntityType>
+        <EntityType Name="Problem">
+          <Key>
+            <PropertyRef Name="problemId" />
+          </Key>
+          <Property Name="problemId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="status" Type="Int32" Nullable="false" />
+          <Property Name="material" Type="Int32" Nullable="false" />
+          <Property Name="algorithm" Type="Int32" Nullable="false" />
+          <Property Name="dateAssinged" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="dateSolved" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="cutWidth" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ACO_params" Relationship="Self.ACO_params_problemId_fkey" FromRole="Problem" ToRole="ACO_params" />
+          <NavigationProperty Name="GA_params" Relationship="Self.GA_params_problemId_fkey" FromRole="Problem" ToRole="GA_params" />
+          <NavigationProperty Name="ProblemOrders" Relationship="Self.ProblemOrders_problemId_fkey" FromRole="Problem" ToRole="ProblemOrders" />
+        </EntityType>
+        <EntityType Name="ProblemOrder">
+          <Key>
+            <PropertyRef Name="problemId" />
+            <PropertyRef Name="orderId" />
+          </Key>
+          <Property Name="problemId" Type="Int64" Nullable="false" />
+          <Property Name="pieceLength" Type="Int32" Nullable="false" />
+          <Property Name="quantity" Type="Int32" Nullable="false" />
+          <Property Name="orderId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Problem" Relationship="Self.ProblemOrders_problemId_fkey" FromRole="ProblemOrders" ToRole="Problem" />
+        </EntityType>
+        <EntityType Name="ProblemStatu">
+          <Key>
+            <PropertyRef Name="statusId" />
+          </Key>
+          <Property Name="statusId" Type="Int32" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SolutionPattern">
+          <Key>
+            <PropertyRef Name="patternId" />
+          </Key>
+          <Property Name="problemId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="solutionId" Type="Int32" Nullable="false" />
+          <Property Name="patternId" Type="Int64" Nullable="false" />
+          <Property Name="quantity" Type="Int32" Nullable="false" />
+          <Property Name="stock" Type="Int32" Nullable="false" />
+          <Property Name="trimLength" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="PatternOrders" Relationship="Self.PatternOrders_patternId_fkey" FromRole="SolutionPatterns" ToRole="PatternOrders" />
+        </EntityType>
+        <EntityType Name="Stock">
+          <Key>
+            <PropertyRef Name="materialType" />
+            <PropertyRef Name="stockId" />
+          </Key>
+          <Property Name="materialType" Type="Int32" Nullable="false" />
+          <Property Name="materialLength" Type="Int32" Nullable="false" />
+          <Property Name="quantity" Type="Int32" Nullable="false" />
+          <Property Name="stockId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="StockType" Relationship="Self.Stocks_materialType_fkey" FromRole="Stocks" ToRole="StockType" />
+        </EntityType>
+        <EntityType Name="StockType">
+          <Key>
+            <PropertyRef Name="typeId" />
+          </Key>
+          <Property Name="typeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="typeName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="width" Type="Int32" Nullable="false" />
+          <Property Name="problemSpecific" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Stocks" Relationship="Self.Stocks_materialType_fkey" FromRole="StockType" ToRole="Stocks" />
+        </EntityType>
+        <Association Name="ACO_params_problemId_fkey">
+          <End Role="Problem" Type="Self.Problem" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ACO_params" Type="Self.ACO_params" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Problem">
+              <PropertyRef Name="problemId" />
+            </Principal>
+            <Dependent Role="ACO_params">
+              <PropertyRef Name="problemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="GA_params_problemId_fkey">
+          <End Role="Problem" Type="Self.Problem" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GA_params" Type="Self.GA_params" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Problem">
+              <PropertyRef Name="problemId" />
+            </Principal>
+            <Dependent Role="GA_params">
+              <PropertyRef Name="problemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PatternOrders_patternId_fkey">
+          <End Role="SolutionPatterns" Type="Self.SolutionPattern" Multiplicity="1" />
+          <End Role="PatternOrders" Type="Self.PatternOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SolutionPatterns">
+              <PropertyRef Name="patternId" />
+            </Principal>
+            <Dependent Role="PatternOrders">
+              <PropertyRef Name="patternId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ProblemOrders_problemId_fkey">
+          <End Role="Problem" Type="Self.Problem" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProblemOrders" Type="Self.ProblemOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Problem">
+              <PropertyRef Name="problemId" />
+            </Principal>
+            <Dependent Role="ProblemOrders">
+              <PropertyRef Name="problemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Stocks_materialType_fkey">
+          <End Role="StockType" Type="Self.StockType" Multiplicity="1" />
+          <End Role="Stocks" Type="Self.Stock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StockType">
+              <PropertyRef Name="typeId" />
+            </Principal>
+            <Dependent Role="Stocks">
+              <PropertyRef Name="materialType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CspContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ACO_params" EntityType="Self.ACO_params" />
+          <EntitySet Name="GA_params" EntityType="Self.GA_params" />
+          <EntitySet Name="PatternOrders" EntityType="Self.PatternOrder" />
+          <EntitySet Name="Problems" EntityType="Self.Problem" />
+          <EntitySet Name="ProblemOrders" EntityType="Self.ProblemOrder" />
+          <EntitySet Name="ProblemStatus" EntityType="Self.ProblemStatu" />
+          <EntitySet Name="SolutionPatterns" EntityType="Self.SolutionPattern" />
+          <EntitySet Name="Stocks" EntityType="Self.Stock" />
+          <EntitySet Name="StockTypes" EntityType="Self.StockType" />
+          <AssociationSet Name="ACO_params_problemId_fkey" Association="Self.ACO_params_problemId_fkey">
+            <End Role="Problem" EntitySet="Problems" />
+            <End Role="ACO_params" EntitySet="ACO_params" />
+          </AssociationSet>
+          <AssociationSet Name="GA_params_problemId_fkey" Association="Self.GA_params_problemId_fkey">
+            <End Role="Problem" EntitySet="Problems" />
+            <End Role="GA_params" EntitySet="GA_params" />
+          </AssociationSet>
+          <AssociationSet Name="PatternOrders_patternId_fkey" Association="Self.PatternOrders_patternId_fkey">
+            <End Role="SolutionPatterns" EntitySet="SolutionPatterns" />
+            <End Role="PatternOrders" EntitySet="PatternOrders" />
+          </AssociationSet>
+          <AssociationSet Name="ProblemOrders_problemId_fkey" Association="Self.ProblemOrders_problemId_fkey">
+            <End Role="Problem" EntitySet="Problems" />
+            <End Role="ProblemOrders" EntitySet="ProblemOrders" />
+          </AssociationSet>
+          <AssociationSet Name="Stocks_materialType_fkey" Association="Self.Stocks_materialType_fkey">
+            <End Role="StockType" EntitySet="StockTypes" />
+            <End Role="Stocks" EntitySet="Stocks" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="postgresModelStoreContainer" CdmEntityContainer="CspContext">
+          <EntitySetMapping Name="ACO_params">
+            <EntityTypeMapping TypeName="postgresModel.ACO_params">
+              <MappingFragment StoreEntitySet="ACO_params">
+                <ScalarProperty Name="problemId" ColumnName="problemId" />
+                <ScalarProperty Name="populationSize" ColumnName="populationSize" />
+                <ScalarProperty Name="beta" ColumnName="beta" />
+                <ScalarProperty Name="gamma" ColumnName="gamma" />
+                <ScalarProperty Name="ro" ColumnName="ro" />
+                <ScalarProperty Name="maxIterations" ColumnName="maxIterations" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GA_params">
+            <EntityTypeMapping TypeName="postgresModel.GA_params">
+              <MappingFragment StoreEntitySet="GA_params">
+                <ScalarProperty Name="problemId" ColumnName="problemId" />
+                <ScalarProperty Name="populationSize" ColumnName="populationSize" />
+                <ScalarProperty Name="tournamentSize" ColumnName="tournamentSize" />
+                <ScalarProperty Name="maxGenerations" ColumnName="maxGenerations" />
+                <ScalarProperty Name="crossoverRatio" ColumnName="crossoverRatio" />
+                <ScalarProperty Name="mutationRatio" ColumnName="mutationRatio" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PatternOrders">
+            <EntityTypeMapping TypeName="postgresModel.PatternOrder">
+              <MappingFragment StoreEntitySet="PatternOrders">
+                <ScalarProperty Name="patternId" ColumnName="patternId" />
+                <ScalarProperty Name="orderId" ColumnName="orderId" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="cachedLength" ColumnName="cachedLength" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Problems">
+            <EntityTypeMapping TypeName="postgresModel.Problem">
+              <MappingFragment StoreEntitySet="Problem">
+                <ScalarProperty Name="problemId" ColumnName="problemId" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="material" ColumnName="material" />
+                <ScalarProperty Name="algorithm" ColumnName="algorithm" />
+                <ScalarProperty Name="dateAssinged" ColumnName="dateAssinged" />
+                <ScalarProperty Name="dateSolved" ColumnName="dateSolved" />
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="cutWidth" ColumnName="cutWidth" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProblemOrders">
+            <EntityTypeMapping TypeName="postgresModel.ProblemOrder">
+              <MappingFragment StoreEntitySet="ProblemOrders">
+                <ScalarProperty Name="problemId" ColumnName="problemId" />
+                <ScalarProperty Name="pieceLength" ColumnName="pieceLength" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="orderId" ColumnName="orderId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProblemStatus">
+            <EntityTypeMapping TypeName="postgresModel.ProblemStatu">
+              <MappingFragment StoreEntitySet="ProblemStatus">
+                <ScalarProperty Name="statusId" ColumnName="statusId" />
+                <ScalarProperty Name="description" ColumnName="description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SolutionPatterns">
+            <EntityTypeMapping TypeName="postgresModel.SolutionPattern">
+              <MappingFragment StoreEntitySet="SolutionPatterns">
+                <ScalarProperty Name="problemId" ColumnName="problemId" />
+                <ScalarProperty Name="solutionId" ColumnName="solutionId" />
+                <ScalarProperty Name="patternId" ColumnName="patternId" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="stock" ColumnName="stock" />
+                <ScalarProperty Name="trimLength" ColumnName="trimLength" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Stocks">
+            <EntityTypeMapping TypeName="postgresModel.Stock">
+              <MappingFragment StoreEntitySet="Stocks">
+                <ScalarProperty Name="materialType" ColumnName="materialType" />
+                <ScalarProperty Name="materialLength" ColumnName="materialLength" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="stockId" ColumnName="stockId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockTypes">
+            <EntityTypeMapping TypeName="postgresModel.StockType">
+              <MappingFragment StoreEntitySet="StockType">
+                <ScalarProperty Name="typeId" ColumnName="typeId" />
+                <ScalarProperty Name="typeName" ColumnName="typeName" />
+                <ScalarProperty Name="width" ColumnName="width" />
+                <ScalarProperty Name="problemSpecific" ColumnName="problemSpecific" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -3,3 +3,4 @@ bin/
 obj/
 packages/
 *.user
+/daemon/ProblemManagementWebsite/Bundles/AngularOutput/*

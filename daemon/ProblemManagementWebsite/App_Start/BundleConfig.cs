@@ -25,6 +25,18 @@ namespace ProblemManagementWebsite
 			bundles.Add(new StyleBundle("~/Content/css").Include(
 					  "~/Content/bootstrap.css",
 					  "~/Content/site.css"));
+
+			bundles.Add(new ScriptBundle("~/bundles/Angular")
+				.Include(
+				"~/bundles/AngularOutput/inline.*",
+				"~/bundles/AngularOutput/polyfills.*",
+				"~/bundles/AngularOutput/scripts.*",
+				"~/bundles/AngularOutput/vendor.*",
+				"~/bundles/AngularOutput/runtime.*",
+				"~/bundles/AngularOutput/main.*"));
+
+			bundles.Add(new StyleBundle("~/Content/Angular")
+			  .Include("~/bundles/AngularOutput/styles.*"));
 		}
 	}
 }
