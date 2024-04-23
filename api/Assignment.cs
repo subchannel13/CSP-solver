@@ -1,5 +1,6 @@
 namespace api;
 
 public class Assignment {
-    public string Name { get; set; }
+    public int? Id { get; set; }
+    public string? Name { get; set; }
 }

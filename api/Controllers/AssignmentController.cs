@@ -13,9 +13,10 @@ public class AssignmentController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetWeatherForecast")]
-    public IEnumerable<Assignment> Get()
+    [HttpGet()]
+    [Route("List")]
+    public IEnumerable<Assignment> List()
     {
-        return new [] { new Assignment { Name = "Task 1",}};
+        return new[] { new Assignment { Id = 0, Name = "Task 1", } };
     }
 }
